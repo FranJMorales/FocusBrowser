@@ -1,0 +1,21 @@
+// popup.js
+let extensionActive = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+  var lockTabButton = document.getElementById('lockTab');
+  var toggleExtensionButton = document.getElementById('toggleExtension');
+
+  lockTabButton.addEventListener('click', function() {
+    var tabUrl = document.getElementById('tabUrl').value;
+
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      var activeTab = tabs[0];
+      chrome.runtime.sendMessage({ lockTab: { tabId: activeTab.id, url: tabUrl } });
+    });
+  });
+
+  toggleExtensionButton.addEventListener('click', function() {
+    extensionActive = !extensionActive;
+    chrome.runtime.sendMessage({ toggleExtension: extensionActive });
+  });
+});

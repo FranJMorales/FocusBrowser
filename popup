@@ -1,0 +1,15 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TabLocker</title>
+    <script src="popup.js"></script>
+  </head>
+  <body>
+    <h1>TabLocker</h1>
+    <label for="tabUrl">URL de la pestaña:</label>
+    <input type="text" id="tabUrl" placeholder="Ingrese la URL">
+    <button id="lockTab">Bloquear Pestaña</button>
+    <button id="toggleExtension">Activar/Desactivar Extensión</button>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+// background.js
+let lockedTabs = [];
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.lockTab !== undefined) {
+    const { tabId, url } = request.lockTab;
+    lockTab(tabId, url);
+  }
+
+  if (request.toggleExtension !== undefined) {
+    extensionActive = request.toggleExtension;
+  }
+});
+
+function lockTab(tabId, url) {
+  if (extensionActive && !isTabLocked(tabId)) {
+    lockedTabs.push({ id: tabId, url: url });
+    chrome.tabs.sendMessage(tabId, { locked: true });
+  }
+}
+
+function isTabLocked(tabId) {
+  return lockedTabs.some(tab => tab.id === tabId);
+}
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  if (extensionActive && isTabLocked(tabId) && changeInfo.url && changeInfo.url !== lockedTabs.find(tab => tab.id === tabId).url) {
+    chrome.tabs.update(tabId, { url: lockedTabs.find(tab => tab.id === tabId).url });
+  }
+});
+
+chrome.tabs.onRemoved.addListener(function(tabId) {
+  unlockTab(tabId);
+});
+
+function unlockTab(tabId) {
+  lockedTabs = lockedTabs.filter(tab => tab.id !== tabId);
+}
